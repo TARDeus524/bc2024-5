@@ -1,6 +1,7 @@
 const {program} = require('commander');
 const path = require('path');
 const fs = require('fs');
+const fsPromise = require('fs/promises');
 const express = require('express');
 const multer = require('multer');
 
@@ -16,8 +17,9 @@ program.parse(process.argv);
 const opts = program.opts();
 const cachePath = opts.cache;
 
-fs.mkdir(cachePath);
-
+fsPromise.access(cachePath)
+    .catch(() => fs.mkdir(cachePath))
+    
 app.use(express.text());
 
 const storage = multer.memoryStorage(); 
