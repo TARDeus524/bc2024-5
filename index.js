@@ -29,10 +29,6 @@ const upload = multer({ storage: storage }).fields([
 ]);
 
 app.get('/notes/:noteName', (req, res) => {
-    fs.open(`${cachePath}/${req.params.noteName}`, (err) => {
-        res.status(404).send('Not found');
-    });
-
     fs.readFile(`${cachePath}/${req.params.noteName}`, (err, data) => {
         if(err) return res.status(404).send('Not found');
         res.status(200).send(data);
@@ -42,7 +38,7 @@ app.get('/notes/:noteName', (req, res) => {
 app.put('/notes/:noteName', (req, res) => {
     fs.open(`${cachePath}/${req.params.noteName}`, (err, fd) => {
         if(err) return res.status(404).send('Not found');
-        fs.write(fd, req.body);
+        fsPromise.write(fd, req.body);
         res.status(200).send();
     });
 });
